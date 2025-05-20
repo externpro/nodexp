@@ -1,0 +1,47 @@
+cmake_minimum_required(VERSION 3.31.7)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/.devcontainer/cmake)
+include(preproject)
+project(nodeng VERSION 14.17.6.1)
+set(SHA256_Linux 3bbe4faf356738d88b45be222bf5e858330541ff16bd0d4cfad36540c331461b)
+set(SHA256_win64 b83e9ce542fda7fc519cec6eb24a2575a84862ea4227dedc171a8e0b5b614ac0)
+set(SHA256_arm64 9c4f3a651e03cd9b5bddd33a80e8be6a6eb15e518513e410bb0852a658699156)
+set(webpro_REV NONE)
+include(flags)
+include(GNUInstallDirs)
+set(XP_INSTALL_CMAKEDIR ${CMAKE_INSTALL_DATADIR}/cmake) # xpPackageDevel
+string(TOLOWER ${CMAKE_SYSTEM_NAME} os)
+set(ver ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(os win)
+  set(arch x64)
+  set(ext zip)
+  set(sha ${SHA256_win64})
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set(arch x64)
+  set(ext tar.xz)
+  set(sha ${SHA256_Linux})
+  set(bin "bin/")
+endif()
+if(DEFINED ENV{XPX} AND "$ENV{XPX}" STREQUAL "JetPack")
+  set(arch arm64)
+  set(sha ${SHA256_arm64})
+  set(bin "bin/")
+endif()
+set(url https://nodejs.org/dist/v${ver}/node-v${ver}-${os}-${arch}.${ext})
+set(fcName ${PROJECT_NAME}_fc)
+include(FetchContent)
+cmake_policy(SET CMP0168 OLD) # don't want to see download progress
+FetchContent_Declare(${fcName} URL ${url} URL_HASH SHA256=${sha})
+FetchContent_MakeAvailable(${fcName})
+string(JOIN "\n" EXT1
+  "get_filename_component(PKG_ROOTDIR \${CMAKE_CURRENT_LIST_DIR}/../.. ABSOLUTE)"
+  "get_filename_component(PKG_ROOTDIR \${PKG_ROOTDIR} ABSOLUTE) # remove relative parts"
+  "set(NODENG_EXE \${PKG_ROOTDIR}/bin/node${CMAKE_EXECUTABLE_SUFFIX})"
+  "list(APPEND reqVars NODENG_EXE)"
+  ""
+  )
+xpPackageDevel()
+string(TOLOWER ${fcName} fcName)
+set(pth ${FETCHCONTENT_BASE_DIR}/${fcName}-src)
+install(PROGRAMS ${pth}/${bin}node${CMAKE_EXECUTABLE_SUFFIX} DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(FILES ${pth}/LICENSE DESTINATION ${CMAKE_INSTALL_DATADIR})
