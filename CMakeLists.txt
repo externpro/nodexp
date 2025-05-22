@@ -76,7 +76,19 @@ string(JOIN "\n" EXT4
   )
 xpPackageDevel(EXE_PATH ${bin}node LIBRARIES xpro::node)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  install(PROGRAMS ${pth}/node${CMAKE_EXECUTABLE_SUFFIX} DESTINATION .)
+  set(root_programs
+    ${pth}/node${CMAKE_EXECUTABLE_SUFFIX}
+    ${pth}/npm
+    ${pth}/npx
+    )
+  set(root_files
+    ${pth}/nodevars.bat
+    ${pth}/npm.cmd
+    ${pth}/npx.cmd
+    )
+  install(PROGRAMS ${root_programs} DESTINATION .)
+  install(FILES ${root_files} DESTINATION .)
+  install(DIRECTORY ${pth}/node_modules DESTINATION . USE_SOURCE_PERMISSIONS)
   install(FILES ${pth_ndlib}/node${CMAKE_STATIC_LIBRARY_SUFFIX} DESTINATION ${CMAKE_INSTALL_LIBDIR})
   set(hdrs ${pth_hders}/include/)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
