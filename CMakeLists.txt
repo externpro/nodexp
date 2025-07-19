@@ -8,7 +8,6 @@ set(SHA256_win64 b83e9ce542fda7fc519cec6eb24a2575a84862ea4227dedc171a8e0b5b614ac
 set(SHA256_arm64 9c4f3a651e03cd9b5bddd33a80e8be6a6eb15e518513e410bb0852a658699156)
 set(SHA256_hders 9429d544af0507c92f309fb1a0b7c2082b52846bdff3cd8aa039ada0461c95b9)
 set(SHA256_ndlib e456fef578acd36eb661055445b4a06c81c47b2cfe0066619e7faa135137d4f6)
-set(webpro_REV NONE)
 include(flags)
 include(FetchContent)
 cmake_policy(SET CMP0168 OLD) # don't want to see download progress
