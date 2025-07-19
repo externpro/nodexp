@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.31)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/.devcontainer/cmake)
 include(preproject)
-project(nodexp VERSION 14.17.6.1)
+project(nodexp VERSION 14.17.6.2)
 # https://nodejs.org/dist/v14.17.6/SHASUMS256.txt
 set(SHA256_Linux 3bbe4faf356738d88b45be222bf5e858330541ff16bd0d4cfad36540c331461b)
 set(SHA256_win64 b83e9ce542fda7fc519cec6eb24a2575a84862ea4227dedc171a8e0b5b614ac0)
