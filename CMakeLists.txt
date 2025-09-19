@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.31)
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/.devcontainer/cmake)
-include(preproject)
-project(nodexp VERSION 14.17.6.2)
+set(CMAKE_PROJECT_TOP_LEVEL_INCLUDES .devcontainer/cmake/xproinc.cmake)
+project(nodexp VERSION 14.17.6)
 # https://nodejs.org/dist/v14.17.6/SHASUMS256.txt
-set(SHA256_Linux 3bbe4faf356738d88b45be222bf5e858330541ff16bd0d4cfad36540c331461b)
-set(SHA256_win64 b83e9ce542fda7fc519cec6eb24a2575a84862ea4227dedc171a8e0b5b614ac0)
-set(SHA256_arm64 9c4f3a651e03cd9b5bddd33a80e8be6a6eb15e518513e410bb0852a658699156)
-set(SHA256_hders 9429d544af0507c92f309fb1a0b7c2082b52846bdff3cd8aa039ada0461c95b9)
-set(SHA256_ndlib e456fef578acd36eb661055445b4a06c81c47b2cfe0066619e7faa135137d4f6)
-include(flags)
+set(SHA256_win64 b83e9ce542fda7fc519cec6eb24a2575a84862ea4227dedc171a8e0b5b614ac0) # node-v14.17.6-win-x64.zip
+set(SHA256_hders 9429d544af0507c92f309fb1a0b7c2082b52846bdff3cd8aa039ada0461c95b9) # node-v14.17.6-headers.tar.xz
+set(SHA256_ndlib e456fef578acd36eb661055445b4a06c81c47b2cfe0066619e7faa135137d4f6) # win-x64/node.lib
+set(SHA256_Linux 3bbe4faf356738d88b45be222bf5e858330541ff16bd0d4cfad36540c331461b) # node-v14.17.6-linux-x64.tar.xz
+set(SHA256_arm64 9c4f3a651e03cd9b5bddd33a80e8be6a6eb15e518513e410bb0852a658699156) # node-v14.17.6-linux-arm64.tar.xz
+set(SHA256_macos b8f94e44b56e7ff52ad9b9c7f2ec263a95aa06d5efcf67c663167588a8467bf6) # node-v14.17.6-darwin-x64.tar.xz
+include(xpflags)
 include(FetchContent)
 cmake_policy(SET CMP0168 OLD) # don't want to see download progress
 include(GNUInstallDirs)
@@ -41,6 +41,22 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   else()
     message(FATAL_ERROR "Unsupported architecture: ${CMAKE_SYSTEM_PROCESSOR}")
   endif()
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  if(PROJECT_VERSION VERSION_EQUAL 14.17.6)
+    message(STATUS "https://nodejs.org/dist/v14.17.6/node-v14.17.6-darwin-arm64.tar.xz DNE")
+    xpPackageDevel()
+    return()
+  endif()
+  set(bin "bin/")
+  set(ext tar.xz)
+  if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64|arm64|ARM64)$")
+    set(arch arm64)
+    set(sha ${SHA256_macos})
+  else()
+    message(FATAL_ERROR "Unsupported architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+  endif()
+else()
+  message(FATAL_ERROR "Unsupported OS: ${CMAKE_SYSTEM_NAME}")
 endif()
 set(url https://nodejs.org/dist/v${ver}/node-v${ver}-${os}-${arch}.${ext})
 set(fcName ${PROJECT_NAME}_fc)
@@ -60,7 +76,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     "endif()"
     ""
     )
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   string(JOIN "\n" EXT3
     "if(NOT TARGET xpro::node)"
     "  add_library(xpro::node INTERFACE IMPORTED)"
@@ -92,7 +108,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   install(DIRECTORY ${pth}/node_modules DESTINATION . USE_SOURCE_PERMISSIONS)
   install(FILES ${pth_ndlib}/node${CMAKE_STATIC_LIBRARY_SUFFIX} DESTINATION ${CMAKE_INSTALL_LIBDIR})
   set(hdrs ${pth_hders}/include/)
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   install(DIRECTORY ${pth}/bin DESTINATION . USE_SOURCE_PERMISSIONS)
   install(DIRECTORY ${pth}/lib DESTINATION . USE_SOURCE_PERMISSIONS)
   set(hdrs ${pth}/include/)
