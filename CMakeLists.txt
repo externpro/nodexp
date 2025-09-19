@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.31)
 set(CMAKE_PROJECT_TOP_LEVEL_INCLUDES .devcontainer/cmake/xproinc.cmake)
-project(nodexp VERSION 14.17.6)
-# https://nodejs.org/dist/v14.17.6/SHASUMS256.txt
-set(SHA256_win64 b83e9ce542fda7fc519cec6eb24a2575a84862ea4227dedc171a8e0b5b614ac0) # node-v14.17.6-win-x64.zip
-set(SHA256_hders 9429d544af0507c92f309fb1a0b7c2082b52846bdff3cd8aa039ada0461c95b9) # node-v14.17.6-headers.tar.xz
-set(SHA256_ndlib e456fef578acd36eb661055445b4a06c81c47b2cfe0066619e7faa135137d4f6) # win-x64/node.lib
-set(SHA256_Linux 3bbe4faf356738d88b45be222bf5e858330541ff16bd0d4cfad36540c331461b) # node-v14.17.6-linux-x64.tar.xz
-set(SHA256_arm64 9c4f3a651e03cd9b5bddd33a80e8be6a6eb15e518513e410bb0852a658699156) # node-v14.17.6-linux-arm64.tar.xz
-set(SHA256_macos b8f94e44b56e7ff52ad9b9c7f2ec263a95aa06d5efcf67c663167588a8467bf6) # node-v14.17.6-darwin-x64.tar.xz
+project(nodexp VERSION 20.18.0)
+# https://nodejs.org/dist/v20.18.0/SHASUMS256.txt
+set(SHA256_win64 f5cea43414cc33024bbe5867f208d1c9c915d6a38e92abeee07ed9e563662297) # node-v20.18.0-win-x64.zip
+set(SHA256_hders b9984e1fb92e30437cf41c1b9ae3361a87022aa2528f9b77d5e415d772d28d96) # node-v20.18.0-headers.tar.xz
+set(SHA256_ndlib afeae4c806b82987ee073c9c75a0e5c5530213145c64f2824d0ed220a6acf962) # win-x64/node.lib
+set(SHA256_Linux 4543670b589593f8fa5f106111fd5139081da42bb165a9239f05195e405f240a) # node-v20.18.0-linux-x64.tar.xz
+set(SHA256_arm64 a9ce85675ba33f00527f6234d90000946c0936fb4fca605f1891bb5f4fe6fb0a) # node-v20.18.0-linux-arm64.tar.xz
+set(SHA256_macos 678e062bdae3824aa997bd469580a4dda48fd51f61d3679b6ba06352e6cef38f) # node-v20.18.0-darwin-arm64.tar.xz
 include(xpflags)
 include(FetchContent)
 cmake_policy(SET CMP0168 OLD) # don't want to see download progress
