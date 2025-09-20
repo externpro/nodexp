@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.31)
 set(CMAKE_PROJECT_TOP_LEVEL_INCLUDES .devcontainer/cmake/xproinc.cmake)
-project(nodexp VERSION 22.18.0)
-# https://nodejs.org/dist/v22.18.0/SHASUMS256.txt
-set(SHA256_win64 c95d8a7e1c99e669cc08c9f1176e068c1f50847c37908fcb8c35b62482366511) # node-v22.18.0-win-x64.zip
-set(SHA256_hders 68a214508678fc6119bf1ad391fbf89fb624ab000d85693ef7c8a764b6622351) # node-v22.18.0-headers.tar.xz
+project(nodexp VERSION 22.19.0)
+# https://nodejs.org/dist/v22.19.0/SHASUMS256.txt
+set(SHA256_win64 ea3fad0e67a991d8477d8c01344b56e69c676ccb733f065b22436994b1253f86) # node-v22.19.0-win-x64.zip
+set(SHA256_hders 12a22367bd09674d04b95265f14295d737892bd682b99aad3122364d36e1ac8f) # node-v22.19.0-headers.tar.xz
 set(SHA256_ndlib 4af0951712fb05a686a03e0592880e195ba53e5eb70e224d7ea7b8b76f2a3e86) # win-x64/node.lib
-set(SHA256_Linux c1bfeecf1d7404fa74728f9db72e697decbd8119ccc6f5a294d795756dfcfca7) # node-v22.18.0-linux-x64.tar.xz
-set(SHA256_arm64 04fca1b9afecf375f26b41d65d52aa1703a621abea5a8948c7d1e351e85edade) # node-v22.18.0-linux-arm64.tar.xz
-set(SHA256_macos 6616f388e127c858989fc7fa92879cdb20d2a5d446adbfdca6ee4feb385bfa8a) # node-v22.18.0-darwin-arm64.tar.xz
+set(SHA256_Linux c0649af18e6a24f6fe5535a3e86b341dd49a8e71117c8b68bde973ef834f16f2) # node-v22.19.0-linux-x64.tar.xz
+set(SHA256_arm64 0b2d9f564b6594222a62c82e1df2efe119dd4a4aff29644f4dd325bf360b6bcc) # node-v22.19.0-linux-arm64.tar.xz
+set(SHA256_macos 1c3a9e78da501bbc1f0c99fbbb69bb7c722bc7a9bf30128b21ea502f3905892a) # node-v22.19.0-darwin-arm64.tar.xz
 include(xpflags)
 include(FetchContent)
 cmake_policy(SET CMP0168 OLD) # don't want to see download progress
