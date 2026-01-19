@@ -8,11 +8,8 @@ set(SHA256_ndlib 4af0951712fb05a686a03e0592880e195ba53e5eb70e224d7ea7b8b76f2a3e8
 set(SHA256_Linux c0649af18e6a24f6fe5535a3e86b341dd49a8e71117c8b68bde973ef834f16f2) # node-v22.19.0-linux-x64.tar.xz
 set(SHA256_arm64 0b2d9f564b6594222a62c82e1df2efe119dd4a4aff29644f4dd325bf360b6bcc) # node-v22.19.0-linux-arm64.tar.xz
 set(SHA256_macos 1c3a9e78da501bbc1f0c99fbbb69bb7c722bc7a9bf30128b21ea502f3905892a) # node-v22.19.0-darwin-arm64.tar.xz
-include(xpflags)
 include(FetchContent)
 cmake_policy(SET CMP0168 OLD) # don't want to see download progress
-include(GNUInstallDirs)
-set(XP_INSTALL_CMAKEDIR ${CMAKE_INSTALL_DATADIR}/cmake) # xpPackageDevel
 string(TOLOWER ${CMAKE_SYSTEM_NAME} os)
 set(ver ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -59,34 +56,45 @@ FetchContent_Declare(${fcName} URL ${url} URL_HASH SHA256=${sha})
 FetchContent_MakeAvailable(${fcName})
 string(TOLOWER ${fcName} fcName)
 set(pth ${FETCHCONTENT_BASE_DIR}/${fcName}-src)
+if(DEFINED XP_NAMESPACE)
+  set(nameSpace ${XP_NAMESPACE}::)
+endif()
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   string(JOIN "\n" EXT3
-    "if(NOT TARGET xpro::node)"
-    "  add_library(xpro::node STATIC IMPORTED)"
-    "  set_property(TARGET xpro::node APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)"
-    "  set_target_properties(xpro::node PROPERTIES"
+    "if(NOT TARGET ${nameSpace}node)"
+    "  add_library(${nameSpace}node STATIC IMPORTED)"
+    "  set_property(TARGET ${nameSpace}node APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)"
+    "  set_target_properties(${nameSpace}node PROPERTIES"
     "    IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE \"C;CXX\""
-    "    IMPORTED_LOCATION_RELEASE \"\${PKG_ROOTDIR}/lib/node${CMAKE_STATIC_LIBRARY_SUFFIX}\""
+    "    IMPORTED_LOCATION_RELEASE \"\${PKG_ROOTDIR}/lib/node\${CMAKE_STATIC_LIBRARY_SUFFIX}\""
     "    )"
     "endif()"
     ""
     )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   string(JOIN "\n" EXT3
-    "if(NOT TARGET xpro::node)"
-    "  add_library(xpro::node INTERFACE IMPORTED)"
+    "if(NOT TARGET ${nameSpace}node)"
+    "  add_library(${nameSpace}node INTERFACE IMPORTED)"
     "endif()"
     ""
     )
 endif()
 string(JOIN "\n" EXT4
   "set(incDirs \${PKG_ROOTDIR}/include \${PKG_ROOTDIR}/include/node)"
-  "set_target_properties(xpro::node PROPERTIES"
+  "set_target_properties(${nameSpace}node PROPERTIES"
   "  INTERFACE_INCLUDE_DIRECTORIES \"\${incDirs}\""
   "  )"
   ""
   )
-xpPackageDevel(EXE_PATH ${bin}node LIBRARIES xpro::node)
+if(DEFINED XP_NAMESPACE)
+  xpExternPackage(NAMESPACE ${XP_NAMESPACE}
+    EXE_PATH ${bin}node LIBRARIES node
+    BASE v0 XPDIFF "bin"
+    WEB "https://nodejs.org/en/blog/release/v22.19.0/"
+    DESC "node/npm development platform and runtime executable bundled as externpro devel package to build addons"
+    LICENSE "[MIT](https://raw.githubusercontent.com/nodejs/node/v22.19.0/LICENSE 'MIT License')"
+    )
+endif()
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(root_programs
     ${pth}/node${CMAKE_EXECUTABLE_SUFFIX}
