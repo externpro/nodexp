@@ -57,29 +57,32 @@ FetchContent_Declare(${fcName} URL ${url} URL_HASH SHA256=${sha})
 FetchContent_MakeAvailable(${fcName})
 string(TOLOWER ${fcName} fcName)
 set(pth ${FETCHCONTENT_BASE_DIR}/${fcName}-src)
+if(DEFINED XP_NAMESPACE)
+  set(nameSpace ${XP_NAMESPACE}::)
+endif()
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   string(JOIN "\n" EXT3
-    "if(NOT TARGET xpro::node)"
-    "  add_library(xpro::node STATIC IMPORTED)"
-    "  set_property(TARGET xpro::node APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)"
-    "  set_target_properties(xpro::node PROPERTIES"
+    "if(NOT TARGET ${nameSpace}node)"
+    "  add_library(${nameSpace}node STATIC IMPORTED)"
+    "  set_property(TARGET ${nameSpace}node APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)"
+    "  set_target_properties(${nameSpace}node PROPERTIES"
     "    IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE \"C;CXX\""
-    "    IMPORTED_LOCATION_RELEASE \"\${PKG_ROOTDIR}/lib/node${CMAKE_STATIC_LIBRARY_SUFFIX}\""
+    "    IMPORTED_LOCATION_RELEASE \"\${PKG_ROOTDIR}/lib/node\${CMAKE_STATIC_LIBRARY_SUFFIX}\""
     "    )"
     "endif()"
     ""
     )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   string(JOIN "\n" EXT3
-    "if(NOT TARGET xpro::node)"
-    "  add_library(xpro::node INTERFACE IMPORTED)"
+    "if(NOT TARGET ${nameSpace}node)"
+    "  add_library(${nameSpace}node INTERFACE IMPORTED)"
     "endif()"
     ""
     )
 endif()
 string(JOIN "\n" EXT4
   "set(incDirs \${PKG_ROOTDIR}/include \${PKG_ROOTDIR}/include/node)"
-  "set_target_properties(xpro::node PROPERTIES"
+  "set_target_properties(${nameSpace}node PROPERTIES"
   "  INTERFACE_INCLUDE_DIRECTORIES \"\${incDirs}\""
   "  )"
   ""
