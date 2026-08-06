@@ -1,5 +1,4 @@
-cmake_minimum_required(VERSION 3.31)
-set(CMAKE_PROJECT_TOP_LEVEL_INCLUDES .devcontainer/cmake/xproinc.cmake)
+cmake_minimum_required(VERSION 4.3)
 project(nodexp VERSION 22.19.0)
 # https://nodejs.org/dist/v22.19.0/SHASUMS256.txt
 set(SHA256_win64 ea3fad0e67a991d8477d8c01344b56e69c676ccb733f065b22436994b1253f86) # node-v22.19.0-win-x64.zip
@@ -56,9 +55,7 @@ FetchContent_Declare(${fcName} URL ${url} URL_HASH SHA256=${sha})
 FetchContent_MakeAvailable(${fcName})
 string(TOLOWER ${fcName} fcName)
 set(pth ${FETCHCONTENT_BASE_DIR}/${fcName}-src)
-if(DEFINED XP_NAMESPACE)
-  set(nameSpace ${XP_NAMESPACE}::)
-endif()
+set(nameSpace ${PROJECT_NAME}::)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   string(JOIN "\n" EXT3
     "if(NOT TARGET ${nameSpace}node)"
@@ -86,8 +83,8 @@ string(JOIN "\n" EXT4
   "  )"
   ""
   )
-if(DEFINED XP_NAMESPACE)
-  xpExternPackage(NAMESPACE ${XP_NAMESPACE}
+if(COMMAND xpExternPackage)
+  xpExternPackage(
     EXE_PATH ${bin}node LIBRARIES node
     BASE v0 XPDIFF "bin"
     WEB "https://nodejs.org/en/blog/release/v22.19.0/"
