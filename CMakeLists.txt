@@ -55,40 +55,20 @@ FetchContent_Declare(${fcName} URL ${url} URL_HASH SHA256=${sha})
 FetchContent_MakeAvailable(${fcName})
 string(TOLOWER ${fcName} fcName)
 set(pth ${FETCHCONTENT_BASE_DIR}/${fcName}-src)
-set(nameSpace ${PROJECT_NAME}::)
+xpPrebuiltComponent(node TYPE executable LOCATION "${bin}node")
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  string(JOIN "\n" EXT3
-    "if(NOT TARGET ${nameSpace}node)"
-    "  add_library(${nameSpace}node STATIC IMPORTED)"
-    "  set_property(TARGET ${nameSpace}node APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)"
-    "  set_target_properties(${nameSpace}node PROPERTIES"
-    "    IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE \"C;CXX\""
-    "    IMPORTED_LOCATION_RELEASE \"\${PKG_ROOTDIR}/lib/node\${CMAKE_STATIC_LIBRARY_SUFFIX}\""
-    "    )"
-    "endif()"
-    ""
+  xpPrebuiltComponent(nodelib TYPE archive
+    LOCATION "lib/node${CMAKE_STATIC_LIBRARY_SUFFIX}"
+    LINK_LANGUAGES c cxx INCLUDES include include/node
     )
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  string(JOIN "\n" EXT3
-    "if(NOT TARGET ${nameSpace}node)"
-    "  add_library(${nameSpace}node INTERFACE IMPORTED)"
-    "endif()"
-    ""
-    )
+else()
+  xpPrebuiltComponent(nodelib TYPE interface INCLUDES include include/node)
 endif()
-string(JOIN "\n" EXT4
-  "set(incDirs \${PKG_ROOTDIR}/include \${PKG_ROOTDIR}/include/node)"
-  "set_target_properties(${nameSpace}node PROPERTIES"
-  "  INTERFACE_INCLUDE_DIRECTORIES \"\${incDirs}\""
-  "  )"
-  ""
-  )
 if(COMMAND xpExternPackage)
-  xpExternPackage(
-    EXE_PATH ${bin}node LIBRARIES node
+  xpExternPackage(EXE node LIBRARIES nodelib
     BASE v0 XPDIFF "bin"
     WEB "https://nodejs.org/en/blog/release/v22.19.0/"
-    DESC "node/npm development platform and runtime executable bundled as externpro devel package to build addons"
+    DESC "node/npm development platform and runtime executable bundled as xpro package to build addons"
     LICENSE "[MIT](https://raw.githubusercontent.com/nodejs/node/v22.19.0/LICENSE 'MIT License')"
     )
 endif()
